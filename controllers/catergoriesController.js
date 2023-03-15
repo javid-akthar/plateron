@@ -10,11 +10,15 @@ function isValidDateFormat(dateString) {
 
 module.exports.categoriesList = async function (req, res) {
   try {
+    let discountDateValidation = false;
     const categoryId = req.params["categoryid"];
     const date = req.query.date;
-
+    console.log('date',date);
+    if(date){
+      discountDateValidation = true
+    }
     // checking if date is valid or not
-    if (!isValidDateFormat(date)) {
+    if (discountDateValidation && !isValidDateFormat(date)) {
       console.log(date, " date is in invalid format");
       return res.status(404).json({
         message: "invalid date",
@@ -40,12 +44,15 @@ module.exports.categoriesList = async function (req, res) {
       });
 
       // for the given category and brandname getting the discount details
-      let discount = await Discount.findOne({
+      let discount 
+      if(discountDateValidation)
+       discount = await Discount.findOne({
         categoryName: categoryId,
         brandName: products.itemDetails[i].brand,
       });
 
       if (
+        discountDateValidation &&
         discount &&
         discount.discountTimeType &&
         discount.discountTimeType === "date" &&
@@ -63,7 +70,7 @@ module.exports.categoriesList = async function (req, res) {
         }
       }
 
-      if (discount && discount.discountTimeType === "day") {
+      if (discountDateValidation && discount && discount.discountTimeType === "day") {
         let day = dayFinder(date);
         if (discount.days.includes(day)) {
           discountInDaysUpdate(products, discount, i)
