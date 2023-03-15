@@ -1,0 +1,28 @@
+{
+    "discountData": [
+        {
+            "categoryName" : "smartPhone",
+            "brandName" : ["apple"],
+            "discountTimeType" : "day",
+            "days" : ["sunday", "monday"],
+            "Location" : "India",
+            "CountryTimeFormat": "IST",
+            "startTime" : "12:30:00",
+            "endTime" : "16:30:00",
+            "discountPercentage" : "2"
+
+        },{
+            "categoryName" : "laptop",
+            "brandName" : ["lenova"],
+            "discountTimeType" : "date",
+            "Location" : "India",
+            "CountryTimeFormat": "IST",
+            "startDate" : "15-03-2023",
+            "endDate" : "18-03-2023",
+            "startTime" : "12:30:00",
+            "endTime" : "16:30:00",
+            "discountPercentage" : "2"
+        }
+     ]
+
+}
