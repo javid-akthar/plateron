@@ -6,7 +6,12 @@ module.exports.sheduleDiscount = async function (req, res) {
     let { smartphone, laptop } = require("../testData");
     await Products.deleteMany({});
     let products = await Products.insertMany([smartphone, laptop]);
-  } catch (err) {
-    console.log(err);
+  }catch (error) {
+    console.log(error);
+    if (error.name === 'ValidationError') {
+      const errorMessage = Object.values(error.errors).map(val => val.message).join(', ');
+      return res.status(404).json({ error: errorMessage });
+    }
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 };

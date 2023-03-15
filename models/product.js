@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-// const ClientDiscount = require('./clientDiscount');
 
 const itemSchema = new mongoose.Schema({
   itemName: {
@@ -9,6 +8,15 @@ const itemSchema = new mongoose.Schema({
   totalprice: {
     type: Number,
     required: true,
+  }
+  
+},{
+  // Define a default projection to exclude _id
+  toJSON: {
+    transform: function (doc, ret) {
+      delete ret._id;
+      return ret;
+    }
   }
 });
 
@@ -22,6 +30,14 @@ const itemDetailsSchema = new mongoose.Schema({
     required: true,
   }],
 
+},{
+  // Define a default projection to exclude _id
+  toJSON: {
+    transform: function (doc, ret) {
+      delete ret._id;
+      return ret;
+    }
+  }
 });
 
 const productSchema = new mongoose.Schema({
@@ -37,6 +53,15 @@ const productSchema = new mongoose.Schema({
   discountData : {
     type : mongoose.Schema.Types.ObjectId,
     ref : 'Discount'
+  }
+},{
+  // Define a default projection to exclude _id
+  toJSON: {
+    transform: function (doc, ret) {
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
   }
 });
 

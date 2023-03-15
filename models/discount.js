@@ -1,55 +1,54 @@
 const mongoose = require("mongoose");
 const moment = require("moment");
 
-// startDate: {
-//     type: Date,
-//     required: true,
-//     get: (value) => {
-//       return value ? moment(value).format('DD-MM-YYYY') : null;
-//     },
-//     set: (value) => {
-//       return value ? moment(value, 'DD-MM-YYYY').toDate() : null;
-//     }
-//   },
-//   endDate: {
-//     type: Date,
-//     required: true,
-//     get: (value) => {
-//       return value ? moment(value).format('DD-MM-YYYY') : null;
-//     },
-//     set: (value) => {
-//       return value ? moment(value, 'DD-MM-YYYY').toDate() : null;
-//     }
-//   }
+const daysEnum = [
+  "sunday",
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+];
 
 const discountDataSchema = new mongoose.Schema({
   categoryName: { type: String, required: true },
   brandName: { type: String, required: true },
-  discountTimeType: { type: String, enum: ["date", "day"], required: true },
+  discountTimeType: {
+    type: String,
+    enum: ["date", "day"],
+    required: true,
+    set: function (val) {
+      return val.toLowerCase();
+    },
+  },
   days: [
     {
       type: String,
       enum: [
+        "sunday",
         "monday",
         "tuesday",
         "wednesday",
         "thursday",
         "friday",
         "saturday",
-        "sunday",
       ],
+      set: function (val) {
+        return val.toLowerCase();
+      },
+      required: function () {
+        return this.discountTimeType === "day";
+      },
     },
   ],
   Location: { type: String, required: true },
   CountryTimeFormat: { type: String, required: true },
   startDate: {
     type: Date,
-    // validate: {
-    //   validator: function (v) {
-    //     return moment(v, "DD-MM-YYYY", true).isValid();
-    //   },
-    //   message: "Invalid date format, must be in DD-MM-YYYY",
-    // },
+    required: function () {
+      return this.discountTimeType === "date";
+    },
     get: (value) => {
       return value ? moment(value).format("DD-MM-YYYY") : null;
     },
@@ -59,12 +58,9 @@ const discountDataSchema = new mongoose.Schema({
   },
   endDate: {
     type: Date,
-    // validate: {
-    //   validator: function (v) {
-    //     return moment(v, "DD-MM-YYYY", true).isValid();
-    //   },
-    //   message: "Invalid date format, must be in DD-MM-YYYY",
-    // },
+    required: function () {
+      return this.discountTimeType === "date";
+    },
     get: (value) => {
       return value ? moment(value).format("DD-MM-YYYY") : null;
     },
@@ -75,19 +71,13 @@ const discountDataSchema = new mongoose.Schema({
   startTime: { type: String, required: true },
   endTime: { type: String, required: true },
   discountPercentage: { type: Number, required: true },
-});
+},
 
-// const discountSchema = new mongoose.Schema({
-//   clientId: { type: String, required: true },
-//   discountData: [discountDataSchema],
-// });
+);
 
-// const Discount = mongoose.model("Discount", discountSchema);
-
-// const clientDiscountSchema = new mongoose.Schema({
-//   // clientId: { type: String, required: true },
-//   discountData: { type: [discountDataSchema], required: true },
-// });
+discountDataSchema.path("days").validate(function (value) {
+  return this.discountTimeType !== "day" || (value && value.length > 0);
+}, "At least one day is required if discountTimeType is day");
 
 const Discount = mongoose.model("Discount", discountDataSchema);
 
