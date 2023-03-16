@@ -77,7 +77,6 @@ module.exports.categoriesList = async function (req, res) {
         }
       }
     }
-    console.log(products.itemDetails.length);
     const allItems = products.itemDetails.flatMap((details) => details.item);  
     return res.status(200).json(allItems);
   } catch (error) {
@@ -103,8 +102,6 @@ function discountInStartAndEndDate(products, discount, i){
 
 function discountInDaysUpdate(products, discount, i){
   for (let j = 0; j < products.itemDetails[i].item.length; j++) {
-    console.log(discount.discountPercentage);
-    console.log(products.itemDetails[i].item[j]);
     products.itemDetails[i].item[j].discountPercentage =
       discount.discountPercentage;
     products.itemDetails[i].item[j].discountedPrice = applyDiscount(
